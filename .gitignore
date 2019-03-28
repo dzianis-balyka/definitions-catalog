@@ -1,0 +1,6 @@
+resources/data
+src/gspaces
+test/gspaces
+ideas.md
+.idea
+*.iml
