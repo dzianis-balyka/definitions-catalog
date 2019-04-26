@@ -10,17 +10,17 @@
     (com.datastax.driver.core.utils UUIDs)
     (java.util UUID))
   )
-(log/info (UUIDs/timeBased))
+;(log/info (UUIDs/timeBased))
 ;(log/info (UUID/fromString "5d32ffc0-4642-11e9-ab95-4d847b81b4b4"))
-(def x (dbc/toAst "(prn (ns-interns *ns*)) (def a 1) (defn b [x] (* x x)) (prn (b 3)) (prn (b 5)) (b 55)"))
+;(def x (dbc/toAst "(prn (ns-interns *ns*)) (def a 1) (defn b [x] (* x x)) (prn (b 3)) (prn (b 5)) (b 55)"))
 
-(log/info x)
+;(log/info x)
 
-(dbc/evalnv "asd" "v222" x)
+;(dbc/evalnv "asd" "v222" x)
 
-(log/info "!!!" (ns-interns (symbol (dbc/replsns "asd" "v222"))))
-(log/info "!!!" (get (ns-interns (symbol (dbc/replsns "asd" "v222"))) (symbol "statements")))
-(log/info "!!!" (var-get (get (ns-interns (symbol (dbc/replsns "asd" "v222"))) (symbol "statements"))))
+;(log/info "!!!" (ns-interns (symbol (dbc/replsns "asd" "v222"))))
+;(log/info "!!!" (get (ns-interns (symbol (dbc/replsns "asd" "v222"))) (symbol "statements")))
+;(log/info "!!!" (var-get (get (ns-interns (symbol (dbc/replsns "asd" "v222"))) (symbol "statements"))))
 
 (defn buildProcData [registry procId]
   ;load names + threads
@@ -42,7 +42,7 @@
 
 (with-open
   [registry (dbcr/buildCassandraRegistry ["localhost"] "registry")]
-  ;(log/info (dbc/+version registry "test:/aaa" "test:/sessions/s1" "(dbc/?latest denik.bighead.exectx/registry [\"test:/aaa\"] [\"test:/sessions/s2\"] nil nil 1)"))
+  ;(log/info (dbc/+version registry "test:/aaa" "test:/sessions/s1" "(dbc/?latest denik.definitions.catalog.exectx/registry [\"test:/aaa\"] [\"test:/sessions/s2\"] nil nil 1)"))
   ;(log/info (dbc/+version registry "test:/aaa" "test:/sessions/s2" "2"))
   ;(log/info (dbc/+version registry "test:/bbb" "test:/sessions/s4" "4"))
   ;(log/info (dbc/+version registry "test:/ggg" "test:/sessions/s5" "5"))
@@ -66,7 +66,7 @@
   (let
     [
      v1 (dbc/+version registry "test:/regVarDep" "test:/threads/t1" "(* 2 2)")
-     v2Value (str "(require '[denik.bighead.exectx :as ectx]) (ectx/fromReg \"test:/regVarDep\"  #uuid \"" v1 "\" nil)")
+     v2Value (str "(require '[denik.definitions.catalog.exectx :as ectx]) (apply ectx/fromReg '(\"test:/regVarDep\"  #uuid \"" v1 "\" nil))")
      v2 (dbc/+version
           registry
           "test:/regVar"
@@ -76,7 +76,7 @@
      ]
     (log/info v1 v2)
     (binding
-      [denik.bighead.exectx/registry registry]
+      [denik.definitions.catalog.exectx/registry registry]
       (log/info "!!!!!!" (ectx/fromReg "test:/regVar" v2 nil))
       )
     )
