@@ -20,6 +20,8 @@
                  [org.clojure/tools.logging "0.4.1"]
                  [vvvvalvalval/scope-capture "0.3.2"]
 
+                 [com.wjoel/clj-bean "0.2.1"]
+
                  [javax.cache/cache-api "1.0.0"]
 
                  [org.apache.ignite/ignite-slf4j "2.7.0"]
@@ -28,6 +30,6 @@
                  [org.apache.ignite/ignite-spring "2.7.0"]
 
                  ]
-  :main gspaces.denik.mm.rocksdbdefs
-  :aot [gspaces.core gspaces.denik.journaledgraph.jg]
+  ;:main
+  :aot [denik.definitions.catalog.igniteregistry]
   )
