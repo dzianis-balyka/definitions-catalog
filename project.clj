@@ -31,5 +31,5 @@
 
                  ]
   ;:main
-  :aot [denik.definitions.catalog.igniteregistry]
+  :aot [denik.definitions.catalog.core]
   )

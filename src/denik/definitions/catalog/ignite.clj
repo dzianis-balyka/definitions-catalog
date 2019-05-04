@@ -25,16 +25,16 @@
     )
   )
 
-(defn createElementsTableAndIndex [cache]
+(defn createElementsTableAndIndex [cache schema table]
 
 
   (log/info (.getAll (.query
                        cache
-                       (new SqlFieldsQuery "CREATE TABLE IF NOT EXISTS REGISTRY.Registry2 (id uuid, ts timestamp, chain varchar, place varchar, edn varchar,  PRIMARY KEY (id))")
+                       (new SqlFieldsQuery (format "CREATE TABLE IF NOT EXISTS %1$s.%2$s (id uuid, ts timestamp, chain varchar, place varchar, thread varchar, edn varchar,  PRIMARY KEY (id))" (name schema) (name table)))
                        )))
   (log/info (.getAll (.query
                        cache
-                       (new SqlFieldsQuery "CREATE INDEX IF NOT EXISTS idx_ts_id_chain_place ON REGISTRY.Registry2 (ts,id,chain,place)")
+                       (new SqlFieldsQuery (format "CREATE INDEX IF NOT EXISTS idx_%2$s_ts_id_chain_place ON %1$s.%2$s (ts,id,chain,place,thread)" (name schema) (name table)))
                        )))
 
   )

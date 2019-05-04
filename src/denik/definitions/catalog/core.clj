@@ -11,6 +11,13 @@
   (?names [this from to] "list names by range [from to)")
   )
 
+(defprotocol DefinitionsRegistryExtended
+  (+v [this place chain thread definition] "add new version of definition for place in chain from thread ")
+  (?< [this places chains threads afterVersion beforeVersion limit] "latest versions of places")
+  (?> [this places chains threads afterVersion beforeVersion limit] "earliest versions of places")
+  (?v [this versions] "concrete versions")
+  )
+
 (defprotocol SearchService
   (ednToDoc [edn]))
 
@@ -55,7 +62,7 @@
     )
   )
 
-(defn ?v
+(defn ?vs
   ;([registry name filter] "latest version by filter")
   ([registry version var] "var from specified version namespace"
     ;(?version )
