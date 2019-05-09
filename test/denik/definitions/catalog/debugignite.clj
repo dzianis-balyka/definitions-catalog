@@ -7,7 +7,6 @@
     [denik.definitions.catalog.exectx :as ectx])
   (:import (org.apache.ignite Ignite Ignition)
            (org.apache.ignite.configuration IgniteConfiguration CacheConfiguration)
-           (denik.definitions.catalog.igniteregistry RegistryElement)
            (java.util UUID LinkedHashMap Date)
            (org.apache.ignite.cache QueryEntity QueryIndex QueryIndexType)
            (org.apache.ignite.cache.query SqlFieldsQuery SqlQuery)
@@ -25,26 +24,26 @@
 
   (let
     [
-     ;v1 (dbc/+v registry "test:/place" "test:/chain" "test:/thread" "(* 2 2)")
-     ;v2Value (str "(require '[denik.definitions.catalog.exectx :as ectx]) (apply ectx/fromReg '(\"test:/regVarDep\"  #uuid \"" v1 "\" nil))")
-     ;v2 (dbc/+v
-     ;     registry
-     ;     "test:/place"
-     ;     "test:/chain"
-     ;     "test:/thread"
-     ;     v2Value
-     ;     )
-     ;res (dbc/?v registry [v1 v2])
+     v1 (dbc/+v registry "test:/place" "test:/chain" "test:/thread" "(* 2 2)")
+     v2Value (str "(require '[denik.definitions.catalog.exectx :as ectx]) (apply ectx/fromReg '(\"test:/regVarDep\"  #uuid \"" v1 "\" nil))")
+     v2 (dbc/+v
+          registry
+          "test:/place"
+          "test:/chain"
+          "test:/thread"
+          v2Value
+          )
+     res (dbc/?v registry [v1 v2])
      ]
-    ;(log/info v1 v2)
-    ;(log/info res)
+    (log/info v1 v2)
+    (log/info res)
 
-    (log/info (.size (dbc/?> registry ["test:/place"] ["test:/chain"] ["test:/thread"] nil nil 100)))
+    (log/info (.size (dbc/?> registry [] ["test:/chain"] [] nil nil 100)))
 
     (loop [from nil count 0]
       (let
         [
-         res (dbc/?> registry ["test:/place"] ["test:/chain"] ["test:/thread"] from nil 10)
+         res (dbc/?> registry [] ["test:/chain"] [] from nil 10)
          ]
         (if
           (empty? res)

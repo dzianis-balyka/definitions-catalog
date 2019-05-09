@@ -48,7 +48,7 @@
        dataRegionConfiguration (-> (new DataRegionConfiguration) (.setPersistenceEnabled true))
        dataStoreCfg (-> (new DataStorageConfiguration) (.setDefaultDataRegionConfiguration dataRegionConfiguration))
        igniteCfg (-> (new IgniteConfiguration) (.setDataStorageConfiguration dataStoreCfg) (.setActiveOnStart true))
-       ignite (Ignition/start igniteCfg)
+       ignite (doto (Ignition/start igniteCfg) (.active true))
        cacheCfg (-> (new CacheConfiguration) (.setName schema))
        cache (.getOrCreateCache ignite cacheCfg)
 
@@ -98,6 +98,7 @@
 
         java.io.Closeable
         (close [this]
+          (log/info "closing ignite cache")
           (try
             (some-> cache (.close))
             (catch Throwable t

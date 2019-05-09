@@ -4,7 +4,6 @@
     )
   (:import (org.apache.ignite Ignite Ignition)
            (org.apache.ignite.configuration IgniteConfiguration CacheConfiguration DataRegionConfiguration DataStorageConfiguration)
-           (denik.definitions.catalog.igniteregistry RegistryElement)
            (java.util UUID LinkedHashMap Date)
            (org.apache.ignite.cache QueryEntity QueryIndex QueryIndexType)
            (org.apache.ignite.cache.query SqlFieldsQuery SqlQuery)
