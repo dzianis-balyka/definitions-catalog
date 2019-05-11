@@ -25,16 +25,22 @@
      wherePart (if (empty? whereCandidats) "" (str "WHERE " (str/join " AND " whereCandidats)))
      limitPart "LIMIT ?"
      sortPart (if asc? "ASC" "DESC")
+     sql (format "SELECT * FROM %1$s.%2$s %3$s ORDER BY TS %4$s %5$s" schema (name elementsTable) wherePart sortPart limitPart)
+     params (concat (sequence places) (sequence chains) (sequence threads) (if (nil? afterVersion) [] [afterVersion]) (if (nil? beforeVersion) [] [beforeVersion]) [limit])
      ]
-    (.getAll
-      (.query
-        cache
-        (->
-          (new
-            SqlFieldsQuery
-            (format "SELECT * FROM %1$s.%2$s %3$s ORDER BY TS %4$s %5$s" schema (name elementsTable) wherePart sortPart limitPart)
+    (log/info sql params)
+    (mapv
+      (fn [e] {:id (nth e 0) :ts (nth e 1) :chain (nth e 2) :place (nth e 3) :thread (nth e 4) :edn (nth e 5)})
+      (.getAll
+        (.query
+          cache
+          (->
+            (new
+              SqlFieldsQuery
+              sql
+              )
+            (.setArgs (into-array Object params))
             )
-          (.setArgs (into-array Object (concat (sequence places) (sequence chains) (sequence threads) (if (nil? afterVersion) [] [afterVersion]) (if (nil? beforeVersion) [] [beforeVersion]) [limit])))
           )
         )
       )

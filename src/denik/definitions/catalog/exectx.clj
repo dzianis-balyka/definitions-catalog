@@ -6,6 +6,7 @@
 (declare ^:dynamic registry)
 (def ^:dynamic invocationStack [])
 (def ^:dynamic depStacks [])
+(def ^:dynamic placesStack [])
 
 (defn fromReg [n v p]
 
@@ -76,3 +77,69 @@
 ;        ))
 ;    )
 ;  )
+
+
+(defn place
+  ([]
+   (let
+     [
+      lastElement (last placesStack)
+      element (first (dbc/?< registry [(:place lastElement)] [(:chain lastElement)] [(:thread lastElement)] nil (:ts lastElement) 1))
+      ]
+     element
+     )
+    )
+  ([place]
+   (let
+     [
+      lastElement (last placesStack)
+      element (first (dbc/?< registry [place] [(:chain lastElement)] [(:thread lastElement)] nil (:ts lastElement) 1))
+      ]
+     element
+     )
+    )
+  ([place chain]
+   (let
+     [
+      lastElement (last placesStack)
+      element (first (dbc/?< registry [place] [chain] [(:thread lastElement)] nil (:ts lastElement) 1))
+      ]
+     element
+     )
+    )
+  ([place chain thread]
+   (let
+     [
+      lastElement (last placesStack)
+      element (first (dbc/?< registry [place] [chain] [thread] nil (:ts lastElement) 1))
+      ]
+     element
+     )
+    )
+  ([place chain thread to]
+   (let
+     [
+      element (first (dbc/?< registry [place] [chain] [thread] nil to 1))
+      ]
+     element
+     )
+    )
+  )
+
+
+
+(defn evalElement [element]
+  (binding
+    [
+     placesStack (conj placesStack element)
+     ]
+    (let
+      [
+       ast (dbc/toAst (:edn element))
+       ]
+      (log/info element)
+      (log/info ast)
+      ast
+      )
+    )
+  )

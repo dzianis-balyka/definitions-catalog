@@ -25,30 +25,22 @@
   (let
     [
      v1 (dbc/+v registry "test:/place" "test:/chain" "test:/thread" "(* 2 2)")
-     v2Value (str "(require '[denik.definitions.catalog.exectx :as ectx]) (apply ectx/fromReg '(\"test:/regVarDep\"  #uuid \"" v1 "\" nil))")
-     v2 (dbc/+v
-          registry
-          "test:/place"
-          "test:/chain"
-          "test:/thread"
-          v2Value
-          )
-     res (dbc/?v registry [v1 v2])
+     res (dbc/?v registry [v1])
      ]
-    (log/info v1 v2)
+    (log/info v1)
     (log/info res)
 
-    (log/info (.size (dbc/?> registry [] ["test:/chain"] [] nil nil 100)))
+    (log/info (.size (dbc/?> registry [] ["test:/chain" "test:/chain2"] [] nil nil 100)))
 
     (loop [from nil count 0]
       (let
         [
-         res (dbc/?> registry [] ["test:/chain"] [] from nil 10)
+         res (dbc/?> registry [] ["test:/chain" "test:/chain2"] [] from nil 10)
          ]
         (if
           (empty? res)
           (log/info count)
-          (recur (nth (last res) 1) (+ count (.size res)))
+          (recur (:ts (last res)) (+ count (.size res)))
           )
 
         )
@@ -61,10 +53,25 @@
 
 
 
-    ;(binding
-    ;  [denik.definitions.catalog.exectx/registry registry]
-    ;  (log/info "!!!!!!" (ectx/fromReg "test:/regVar" v2 nil))
-    ;  )
+    (binding
+      [
+       denik.definitions.catalog.exectx/registry registry
+       ]
+      (let [
+            element (ectx/place "test:/place" "test:/chain" "test:/thread" nil)
+            res (ectx/evalElement element)
+            ]
+        (log/info "!!!!!!" element)
+        (log/info "!!!!!!" res)
+        (binding
+          [
+           denik.definitions.catalog.exectx/placesStack [element]
+           ]
+          (log/info "!!!!!!" (ectx/place "test:/place" "test:/chain" "test:/thread" (:ts element)))
+          )
+        )
+      )
+
     )
 
   ;(binding
