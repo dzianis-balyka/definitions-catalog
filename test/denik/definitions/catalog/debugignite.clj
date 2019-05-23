@@ -58,7 +58,7 @@
        denik.definitions.catalog.exectx/registry registry
        ]
       (let [
-            element (ectx/place "test:/place" "test:/chain" "test:/thread" nil)
+            element (ectx/latest ["test:/place"] ["test:/chain"] ["test:/thread"] nil 1)
             res (ectx/evalElement element)
             ]
         (log/info "!!!!!!" element)
@@ -67,7 +67,7 @@
           [
            denik.definitions.catalog.exectx/placesStack [element]
            ]
-          (log/info "!!!!!!" (ectx/place "test:/place" "test:/chain" "test:/thread" (:ts element)))
+          (log/info "!!!!!!" (ectx/latest ["test:/place"] ["test:/chain"] ["test:/thread"] (:ts element) 1))
           )
         )
       )

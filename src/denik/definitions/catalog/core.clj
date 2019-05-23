@@ -59,6 +59,7 @@
     (intern (symbol replsNsSymbol) (symbol "statements") asts)
     (intern (symbol replsNsSymbol) (symbol "results") replResults)
     (in-ns (ns-name previousNs))
+    replResults
     )
   )
 
