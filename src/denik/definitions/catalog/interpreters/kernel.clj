@@ -5,10 +5,32 @@
     )
   )
 
-
-(defn processExpression [x]
-
+(defprotocol Interpretation
+  (stack [this] "current stack")
+  (nextStep [this ] "calculate next step")
+  (stateHistory [this] "iterator of interpretations for each history point")
+  (modifyState [this newState] "adds data to calculation branch")
   )
+
+;find interpreter for x
+;interpret
+(defn
+  (interpret
+    [x intDict]
+    (cond
+      (map? x) (log/info "map" x)
+      (vector? x) (log/info "vector" x)
+      (set? x) (log/info "set" x)
+      (list? x) (log/info "list" x)
+      :else (log/info "unknown" x))
+    )
+  (interpret
+    [x]
+    (interpret x nil)
+    )
+  )
+
+
 
 (defn processRepl [registry processorChain thread]
   ;stack place

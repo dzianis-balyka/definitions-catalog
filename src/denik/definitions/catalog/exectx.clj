@@ -1,7 +1,7 @@
 (ns denik.definitions.catalog.exectx
   (:require [clojure.tools.logging :as log]
             [denik.definitions.catalog.core :as dbc])
-  )
+  (:import (java.util Iterator)))
 
 (declare ^:dynamic registry)
 (def ^:dynamic invocationStack [])
@@ -129,5 +129,36 @@
       (log/info evalResult)
       evalResult
       )
+    )
+  )
+
+(defn chainToSeq [places chains threads from to batchSize]
+  (let
+    [
+     currentBatch (ref (dbc/?> registry places chains threads from to batchSize))
+     iterator (reify Iterator
+                (Iterator/next [it]
+                  (dosync
+                    (let
+                      [
+                       res (first @currentBatch)
+                       restElements (rest @currentBatch)
+                       ]
+                      (ref-set
+                        currentBatch
+                        (if
+                          (empty? restElements)
+                          (dbc/?> registry places chains threads (:ts res) to batchSize)
+                          restElements
+                          )
+                        )
+                      res
+                      )
+                    )
+                  )
+                (Iterator/hasNext [it] true)
+                )
+     ]
+    (iterator-seq iterator)
     )
   )
