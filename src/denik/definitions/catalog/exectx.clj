@@ -156,7 +156,11 @@
                       )
                     )
                   )
-                (Iterator/hasNext [it] true)
+                (Iterator/hasNext [it]
+                  (dosync
+                    (not (empty? @currentBatch))
+                    )
+                  )
                 )
      ]
     (iterator-seq iterator)
