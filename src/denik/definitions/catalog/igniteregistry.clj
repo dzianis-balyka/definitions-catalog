@@ -19,8 +19,8 @@
      placesPart (some-> places (seq) ((fn [es] (format "PLACE IN (%1$s)" (str/join ", " (mapv (fn [e] "?") es))))))
      chainsPart (some-> chains (seq) ((fn [es] (format "CHAIN IN (%1$s)" (str/join ", " (mapv (fn [e] "?") es))))))
      threadsPart (some-> threads (seq) ((fn [es] (format "THREAD IN (%1$s)" (str/join ", " (mapv (fn [e] "?") es))))))
-     afterPart (if (nil? afterVersion) nil (format "TS > ?"))
-     beforePart (if (nil? beforeVersion) nil (format "TS < ?"))
+     afterPart (if (nil? afterVersion) nil (format "TS >= ?"))
+     beforePart (if (nil? beforeVersion) nil (format "TS <= ?"))
      whereCandidats (filter some? [placesPart chainsPart threadsPart afterPart beforePart])
      wherePart (if (empty? whereCandidats) "" (str "WHERE " (str/join " AND " whereCandidats)))
      limitPart "LIMIT ?"

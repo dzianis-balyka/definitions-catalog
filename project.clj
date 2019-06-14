@@ -24,12 +24,12 @@
 
                  [javax.cache/cache-api "1.0.0"]
 
-                 [org.apache.ignite/ignite-slf4j "2.7.0"]
-                 [org.apache.ignite/ignite-core "2.7.0"]
-                 [org.apache.ignite/ignite-indexing "2.7.0"]
-                 [org.apache.ignite/ignite-spring "2.7.0"]
+                 [org.apache.ignite/ignite-slf4j "2.7.5"]
+                 [org.apache.ignite/ignite-core "2.7.5"]
+                 [org.apache.ignite/ignite-indexing "2.7.5"]
+                 [org.apache.ignite/ignite-spring "2.7.5"]
 
                  ]
   ;:main
-  :aot [denik.definitions.catalog.core]
+  :aot [denik.definitions.catalog.core denik.definitions.catalog.schemaapi]
   )

@@ -148,7 +148,7 @@
                         currentBatch
                         (if
                           (empty? restElements)
-                          (dbc/?> registry places chains threads (:ts res) to batchSize)
+                          (filter (fn [x] (not (= (:id x) (:id res)))) (dbc/?> registry places chains threads (:ts res) to batchSize))
                           restElements
                           )
                         )
@@ -164,5 +164,29 @@
                 )
      ]
     (iterator-seq iterator)
+    )
+  )
+
+(defn evalInNs [namespaceName asts]
+  (let
+    [
+     previousNs *ns*
+     varsNsSymbol (symbol namespaceName)
+     replResults (do
+                   (in-ns varsNsSymbol)
+                   (refer 'clojure.core)
+                   (mapv
+                     #(try
+                        (eval %)
+                        (catch Throwable t
+                          (log/error t "error during eval of" % "at" namespaceName)
+                          nil
+                          ))
+                     asts
+                     )
+                   )
+     ]
+    (in-ns (ns-name previousNs))
+    replResults
     )
   )
