@@ -1,7 +1,6 @@
 (ns denik.definitions.catalog.debugstatebuilder
   (:require [denik.definitions.catalog.statebuilder :refer :all]
             [clojure.tools.logging :as log]
-            [clojure.string :as str]
             [denik.definitions.catalog.igniteregistry :as reg]
             [denik.definitions.catalog.exectx :as exectx]
             [denik.definitions.catalog.schemaapi :refer :all]
@@ -41,56 +40,65 @@
 ;    )
 ;  )
 
-(defmacro ednStr [& form]
-  (str/join (mapv #(str %) form))
-  )
 
-
-
-(let
-  [chain
-   [
-
-    {:id  nil :ts nil :chain nil :place nil :thread nil
-     :edn (ednStr
-            (require (quote [denik.definitions.catalog.schemaapi :refer :all]))
-            )}
-    {:id  nil :ts nil :chain nil :place nil :thread nil
-     :edn (ednStr
-            (addSchema
-              (->
-                (createSchema "Event" [])
-                (addField "f1" "string")
-                (addField "f2" "int")
-                )
-              )
-            )
-     }
-    {:id  nil :ts nil :chain nil :place nil :thread nil
-     :edn (ednStr
-            (addSchema
-              (->
-                (createSchema "Person" [])
-                (addField "f1" "string")
-                (addField "f2" "int")
-                )
-              )
-            )
-     }
-    ]
-   asts (map #(dbc/toAst (:edn %)) chain)
-   namespaceName "ttt"
+(defn schemaJournal []
+  [
+   {:id  nil :ts nil :chain nil :place nil :thread nil
+    :edn (exectx/ednStr
+           (require (quote [denik.definitions.catalog.schemaapi :refer :all]))
+           )}
+   {:id  nil :ts nil :chain nil :place nil :thread nil
+    :edn (exectx/ednStr
+           (addSchema
+             (->
+               (createSchema "Event" [])
+               (addField "f1" "string")
+               (addField "f2" "int")
+               )
+             )
+           )
+    }
+   {:id  nil :ts nil :chain nil :place nil :thread nil
+    :edn (exectx/ednStr
+           (addSchema
+             (->
+               (createSchema "Person" [])
+               (addField "f1" "string")
+               (addField "f2" "int")
+               )
+             )
+           )
+    }
    ]
-  (mapv #(log/info "!!!" %) chain)
-  (mapv #(log/info %) asts)
-  (mapv
-    #(log/info
-       (exectx/evalInNs namespaceName %)
-       (some->
-         (get (ns-interns (symbol namespaceName)) (symbol "schemas"))
-         (deref)
-         )
-       )
-    asts
-    )
   )
+
+(defn fndefJournal []
+  [
+   {:id  nil :ts nil :chain nil :place nil :thread nil
+    :edn (exectx/ednStr
+           (def fnDefinition '(fn [x] (* x x)))
+           )
+    }
+   ]
+  )
+
+;(let
+;  [chain (fndefJournal)
+;   asts (map #(dbc/toAst (:edn %)) chain)
+;   namespaceName "ttt"]
+;  (mapv #(log/info "!!!" %) chain)
+;  (mapv #(log/info %) asts)
+;  (mapv
+;    #(log/info
+;       (exectx/evalInNs namespaceName %)
+;       (some->
+;         (get (ns-interns (symbol namespaceName)) (symbol "fnDefinition"))
+;         (deref)
+;
+;         )
+;       )
+;    asts
+;    )
+;  )
+
+(log/info (last (exectx/states (schemaJournal) "temp-space")))

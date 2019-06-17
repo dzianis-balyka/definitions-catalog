@@ -1,6 +1,7 @@
 (ns denik.definitions.catalog.exectx
   (:require [clojure.tools.logging :as log]
-            [denik.definitions.catalog.core :as dbc])
+            [denik.definitions.catalog.core :as dbc]
+            [clojure.string :as str])
   (:import (java.util Iterator)))
 
 (declare ^:dynamic registry)
@@ -188,5 +189,28 @@
      ]
     (in-ns (ns-name previousNs))
     replResults
+    )
+  )
+
+(defmacro ednStr [& form]
+  (str/join (mapv #(str %) form))
+  )
+
+(defn states [chain space]
+  (let
+    [
+     asts (map #(dbc/toAst (:edn %)) chain)
+     ]
+    (map
+      (fn
+        [e]
+        (evalInNs space e)
+        (some->
+          (ns-interns (symbol space))
+          ((fn [x] (if (empty? x) {} (into (hash-map) (mapv (fn [y] [(first y) @(last y)]) x)))))
+          )
+        )
+      asts
+      )
     )
   )
