@@ -2,7 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [denik.definitions.catalog.core :as dbc]
             [clojure.string :as str])
-  (:import (java.util Iterator)))
+  (:import (java.util Iterator UUID)))
 
 (declare ^:dynamic registry)
 (def ^:dynamic invocationStack [])
@@ -79,7 +79,6 @@
 ;    )
 ;  )
 
-
 (defn latest
   ([places chains threads to limit]
    (let
@@ -90,29 +89,6 @@
      )
     )
   )
-
-(defn earliest
-  ([places chains threads from limit]
-   (let
-     [
-      element (first (dbc/?< registry places chains threads from nil limit))
-      ]
-     element
-     )
-    )
-  )
-
-(defn versions
-  ([versions]
-   (let
-     [
-      element (first (dbc/?v registry versions))
-      ]
-     element
-     )
-    )
-  )
-
 
 
 (defn evalElement [element]
@@ -182,7 +158,8 @@
                         (catch Throwable t
                           (log/error t "error during eval of" % "at" namespaceName)
                           nil
-                          ))
+                          )
+                        )
                      asts
                      )
                    )
@@ -192,9 +169,16 @@
     )
   )
 
+(defn ednToStrEval [form]
+  (str form)
+  )
+
 (defmacro ednStr [& form]
   (str/join (mapv #(str %) form))
   )
+
+(defn evl [form]
+  (nth form 0))
 
 (defn states [chain space]
   (let
@@ -207,10 +191,23 @@
         (evalInNs space e)
         (some->
           (ns-interns (symbol space))
-          ((fn [x] (if (empty? x) {} (into (hash-map) (mapv (fn [y] [(first y) @(last y)]) x)))))
+          ((fn [x] (if (empty? x) {} (with-meta (into (hash-map) (mapv (fn [y] [(first y) @(last y)]) x)) {:origin "chain"}))))
           )
         )
       asts
       )
     )
+  )
+
+(defn loadChain
+  ([space place chain threads from to]
+   (states (chainToSeq [place] [chain] [threads] from to 100) space))
+
+  ([space place chain threads]
+   (loadChain space place chain threads nil nil)
+    )
+  )
+
+(defn addToPlaceInChain [chain place thread elements]
+  (run! #(dbc/+v denik.definitions.catalog.exectx/registry place chain thread %) elements)
   )

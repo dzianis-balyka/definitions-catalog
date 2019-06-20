@@ -92,14 +92,18 @@
           (rangeSearch schema elementsTable cache places chains threads afterVersion beforeVersion limit true)
           )
         (?v [this versions] "concrete versions"
-          (.getAll
-            (.query
-              cache
-              (->
-                (new SqlFieldsQuery (format "SELECT * FROM %1$s.%2$s WHERE ID IN (%3$s)" schema (name elementsTable) (str/join ", " (mapv (fn [e] "?") versions))))
-                (.setArgs (into-array Object versions))
+          (mapv
+            (fn [e] {:id (nth e 0) :ts (nth e 1) :chain (nth e 2) :place (nth e 3) :thread (nth e 4) :edn (nth e 5)})
+            (.getAll
+              (.query
+                cache
+                (->
+                  (new SqlFieldsQuery (format "SELECT * FROM %1$s.%2$s WHERE ID IN (%3$s)" schema (name elementsTable) (str/join ", " (mapv (fn [e] "?") versions))))
+                  (.setArgs (into-array Object versions))
+                  )
                 )
-              ))
+              )
+            )
           )
 
         java.io.Closeable

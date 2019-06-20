@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [denik.definitions.catalog.igniteregistry :as reg]
             [denik.definitions.catalog.exectx :as exectx]
+            [denik.definitions.catalog.tagsapi :as tapi]
             [denik.definitions.catalog.schemaapi :refer :all]
             [denik.definitions.catalog.core :as dbc])
   (:import (java.util Iterator)))
@@ -101,4 +102,39 @@
 ;    )
 ;  )
 
-(log/info (last (exectx/states (schemaJournal) "temp-space")))
+
+
+
+
+(with-open
+  [registry (reg/buildIgniteRegistry "REGISTRY_EXTENDED")]
+  (binding
+    [
+     denik.definitions.catalog.exectx/registry registry
+     ]
+
+    ;(tapi/initTagMut "v.1")
+    (tapi/tag "v.1" {"p1" "id11" "p2" "id22"})
+    (log/info (tapi/loadTag "v.1") )
+
+    ;(exectx/addToPlaceInChain
+    ;  "chain1" "f:square" "root"
+    ;  [
+    ;   (exectx/ednStr
+    ;     (def fnDefinition '(fn [x] (* x x)))
+    ;     )
+    ;   ]
+    ;  )
+    ;(let
+    ;  [
+    ;   snapshot (last (exectx/loadChain "temp-space" "f:square" "chain1" "root" nil nil))
+    ;   d (get snapshot (symbol "fnDefinition"))
+    ;   ]
+    ;  (log/info "evl::" d (meta snapshot))
+    ;  (log/info "evl::" ((eval d) 2))
+    ;  )
+
+    )
+
+  )
+
