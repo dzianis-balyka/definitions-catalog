@@ -13,7 +13,7 @@
     [
      element (first (dbc/?v exectx/registry [placeVersion]))
      elementPlace (:place element)
-     placeChain (exectx/loadChain (str elementPlace (UUID/randomUUID)) elementPlace (:chain element) (:thread element) nil (:ts element))
+     placeChain (exectx/loadChain (str elementPlace (UUID/randomUUID)) elementPlace (:chain element) nil nil (:ts element))
      lastState (last placeChain)
      ]
     lastState
@@ -25,8 +25,7 @@
    [place tag]
    (let
      [placeVersion (tapi/placeVersionByTag tag place)
-      state (stateByVersion placeVersion)
-      ]
+      state (stateByVersion placeVersion)]
      state
      )
     )

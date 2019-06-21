@@ -200,11 +200,11 @@
   )
 
 (defn loadChain
-  ([space place chain threads from to]
-   (states (chainToSeq [place] [chain] [threads] from to 100) space))
+  ([space place chain thread from to]
+   (states (chainToSeq (if (nil? place) nil [place]) (if (nil? chain) nil [chain]) (if (nil? thread) nil [thread]) from to 100) space))
 
-  ([space place chain threads]
-   (loadChain space place chain threads nil nil)
+  ([space place chain thread]
+   (loadChain space place chain thread nil nil)
     )
   )
 
