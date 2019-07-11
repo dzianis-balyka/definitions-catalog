@@ -29,6 +29,8 @@
                  [org.apache.ignite/ignite-indexing "2.7.5"]
                  [org.apache.ignite/ignite-spring "2.7.5"]
 
+                 [com.bhauman/figwheel-main "0.2.1"]
+
                  ]
   ;:main
   :aot [denik.definitions.catalog.core denik.definitions.catalog.schemaapi]
