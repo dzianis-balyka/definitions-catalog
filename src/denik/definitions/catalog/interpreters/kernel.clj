@@ -50,14 +50,21 @@
 (defn processContextSymbol [form intDict ctx]
   )
 
+
 (defn defaultSymbol [form intDict ctx]
   (log/info form ctx)
-  (if ( ))
-  (let [sname ]
-    (loop [c ctx]
-      ()
+  (if
+    (nil? (namespace form))
+    ;local ns
+    (let [sname ]
+      (loop [c ctx]
+        ()
 
+        )
       )
+
+    ;global ns
+
     )
   )
 
