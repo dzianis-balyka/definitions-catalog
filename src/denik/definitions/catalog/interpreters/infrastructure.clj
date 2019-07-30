@@ -71,8 +71,13 @@
      inPlace (:in threadData)
      outPlace (:out threadData)
      statePlace (:state threadData)
+     interpreterPlace (:interpreter threadData)
      processState (last (exectx/loadChain (nsForPlaceInThread "treadState" (:place statePlace) threadName) (:place statePlace) (:chain statePlace) nil))
+     currentStatement (some-> processState (:current))
      ]
+
+
+
     (log/info "thread data" threadData)
     (log/info "state" processState)
     )

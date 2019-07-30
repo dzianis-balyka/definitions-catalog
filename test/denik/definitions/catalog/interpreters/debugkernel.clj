@@ -5,8 +5,9 @@
 ;(interpret '(a b c) defaultIntDict {})
 
 
-(log/info (interpret [1 2 3] defaultIntDict {}))
-(log/info (interpret #{1 2 3} defaultIntDict {}))
-(log/info (interpret {1 2 3 4} defaultIntDict {}))
+;(log/info (interpret [1 2 3] defaultIntDict {}))
+;(log/info (interpret #{1 2 3} defaultIntDict {}))
+;(log/info (interpret {1 2 3 4} defaultIntDict {}))
+(log/info (interpret 'clojure.core/+++++ defaultIntDict {}))
 
 

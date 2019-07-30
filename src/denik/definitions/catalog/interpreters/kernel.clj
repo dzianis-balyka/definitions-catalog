@@ -1,6 +1,7 @@
 (ns denik.definitions.catalog.interpreters.kernel
   (:require
     [clojure.tools.logging :as log]
+    [clojure.repl :as repl]
     [denik.definitions.catalog.core :as dbc]
     )
   )
@@ -43,7 +44,7 @@
 (defn defaultLogFn [form intDict ctx]
   (log/info form ctx))
 
-(defn getFromGlobalNs)
+(defn getFromGlobalNs [])
 
 (defn processNamedNsSymbol [form intDict ctx]
   )
@@ -56,7 +57,7 @@
   (if
     (nil? (namespace form))
     ;local ns
-    (let [sname ]
+    (let [sname nil]
       (loop [c ctx]
         ()
 
@@ -64,6 +65,21 @@
       )
 
     ;global ns
+    (let
+      [nsPlacesPrefix (:ns-places-prefix ctx)
+       nsName (namespace form)
+       cljValue (some->
+                  (find-ns (symbol nsName))
+                  (ns-interns)
+                  (get (symbol (name form)))
+                  (deref)
+                  )
+       regNs nil
+       ]
+      (prn "!!!!!" (repl/source-fn form))
+      (prn "!!!!!" cljValue)
+      cljValue
+      )
 
     )
   )
